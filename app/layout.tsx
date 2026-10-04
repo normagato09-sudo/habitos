@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Figtree, Fraunces } from "next/font/google";
 import { BottomNav } from "@/components/nav/BottomNav";
+import { ServiceWorker } from "@/components/pwa/ServiceWorker";
 import "./globals.css";
 
 const figtree = Figtree({
@@ -17,6 +18,9 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: { default: "Hábitos", template: "%s · Hábitos" },
   description: "Tus hábitos diarios, de un vistazo.",
+  applicationName: "Hábitos",
+  appleWebApp: { capable: true, title: "Hábitos", statusBarStyle: "default" },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {
@@ -56,6 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </div>
         <BottomNav />
+        <ServiceWorker />
       </body>
     </html>
   );
