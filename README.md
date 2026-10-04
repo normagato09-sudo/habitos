@@ -25,5 +25,6 @@ public/       Iconos y recursos estáticos
 npm install
 npm run dev      # http://localhost:3000
 npm run lint
+npm test         # tests de lógica y datos (Vitest)
 npm run build
 ```
