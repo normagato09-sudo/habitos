@@ -1,5 +1,5 @@
 import { addDays, fromDateKey } from "@/lib/domain/dates";
-import type { DateKey } from "@/lib/domain/types";
+import type { DateKey, Frequency } from "@/lib/domain/types";
 
 const longDate = new Intl.DateTimeFormat("es-ES", {
   weekday: "long",
@@ -35,4 +35,32 @@ export function relativeDayName(date: DateKey, today: DateKey): string {
 
 export function plural(n: number, one: string, many: string): string {
   return `${n} ${n === 1 ? one : many}`;
+}
+
+/** Nombres de los días, de lunes (índice 0) a domingo. */
+export const WEEKDAY_NAMES = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"];
+
+/** "a, b y c" */
+export function listJoin(items: string[]): string {
+  return items.length <= 1
+    ? (items[0] ?? "")
+    : `${items.slice(0, -1).join(", ")} y ${items[items.length - 1]}`;
+}
+
+/** "Cada día", "Martes, jueves y domingo", "3 veces por semana"… */
+export function describeFrequency(frequency: Frequency): string {
+  switch (frequency.type) {
+    case "daily":
+      return "Cada día";
+    case "weekly":
+      return frequency.times === 1 ? "1 vez por semana" : `${frequency.times} veces por semana`;
+    case "weekdays": {
+      const days = [...frequency.days].sort((a, b) => a - b);
+      const key = days.join("");
+      if (key === "1234567") return "Cada día";
+      if (key === "12345") return "De lunes a viernes";
+      if (key === "67") return "Fines de semana";
+      return capitalize(listJoin(days.map((d) => WEEKDAY_NAMES[d - 1])));
+    }
+  }
 }

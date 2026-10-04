@@ -36,7 +36,7 @@ export function Sheet({ open, onClose, title, children, footer }: SheetProps) {
       }}
       className="sheet m-0 mt-auto w-full p-0 sm:mx-auto sm:max-w-lg"
     >
-      <div className="flex max-h-[90dvh] flex-col rounded-t-[1.75rem] bg-surface pb-[var(--safe-bottom)]">
+      <div className="flex max-h-[92dvh] flex-col overflow-hidden rounded-t-[1.75rem] bg-surface pb-[var(--safe-bottom)]">
         <div className="mx-auto mt-2.5 h-1.5 w-10 rounded-full bg-line" aria-hidden="true" />
         <header className="flex items-center justify-between gap-3 px-5 pt-3 pb-2">
           <h2 id={titleId} className="font-display text-2xl font-semibold">
@@ -51,7 +51,8 @@ export function Sheet({ open, onClose, title, children, footer }: SheetProps) {
             <IconClose />
           </button>
         </header>
-        <div className="overflow-y-auto px-5 pb-5">{children}</div>
+        {/* min-h-0: sin esto, el contenido largo no se encoge y se desplaza todo el panel. */}
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-5">{children}</div>
         {footer && <footer className="border-t border-line px-5 py-4">{footer}</footer>}
       </div>
     </dialog>
