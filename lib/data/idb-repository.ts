@@ -1,4 +1,5 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "idb";
+import { startOfWeek, todayKey } from "@/lib/domain/dates";
 import { applyHabitChanges, buildHabit } from "@/lib/domain/habits";
 import { completionId, type Completion, type Habit } from "@/lib/domain/types";
 import type { HabitRepository } from "./repository";
@@ -37,9 +38,11 @@ export class IdbRepository implements HabitRepository {
           completions.createIndex("byDate", "date");
 
           // Primera vez: hábitos de ejemplo, en la misma transacción.
+          // Empiezan el lunes de esta semana para poder marcar ya los días pasados.
           const now = new Date();
+          const startDate = startOfWeek(todayKey(now));
           SEED_HABITS.forEach((input, i) => {
-            void tx.objectStore("habits").add(buildHabit(input, i, now));
+            void tx.objectStore("habits").add(buildHabit({ ...input, startDate }, i, now));
           });
         }
         // Futuras versiones: añadir aquí migraciones con `if (oldVersion < 2) { … }`.

@@ -188,3 +188,32 @@ dialog[open]::backdrop {
     scroll-behavior: auto !important;
   }
 }
+
+/* Al completar un hábito: el círculo "late" una vez */
+@keyframes check-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.22);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-check-pop {
+  animation: check-pop 320ms cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+/* Aparición suave del mensaje de día completado */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.animate-rise-in {
+  animation: rise-in 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}

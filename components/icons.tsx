@@ -92,3 +92,19 @@ export function IconTrash(props: IconProps) {
     </Icon>
   );
 }
+
+export function IconChevronLeft(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="m15 5-7 7 7 7" />
+    </Icon>
+  );
+}
+
+export function IconChevronRight(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="m9 5 7 7-7 7" />
+    </Icon>
+  );
+}

@@ -1,5 +1,6 @@
 import "fake-indexeddb/auto";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { startOfWeek, todayKey } from "@/lib/domain/dates";
 import { IdbRepository } from "./idb-repository";
 
 let n = 0;
@@ -20,6 +21,8 @@ describe("IdbRepository", () => {
     const habits = await newRepo().listHabits();
     expect(habits.map((h) => h.name)).toEqual(["Lavarme los dientes", "Ducharme"]);
     expect(habits[1].frequency).toEqual({ type: "weekdays", days: [2, 4, 7] });
+    // Empiezan el lunes de esta semana, para poder marcar los días pasados.
+    expect(habits[0].startDate).toBe(startOfWeek(todayKey()));
   });
 
   it("no duplica los ejemplos al volver a abrir la base de datos", async () => {
