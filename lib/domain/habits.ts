@@ -11,7 +11,6 @@ export function buildHabit(input: HabitInput, order: number, now: Date = new Dat
     frequency: input.frequency,
     timeOfDay: input.timeOfDay,
     group: input.group,
-    reminder: input.reminder,
     startDate: input.startDate ?? todayKey(now),
     order,
     createdAt: timestamp,

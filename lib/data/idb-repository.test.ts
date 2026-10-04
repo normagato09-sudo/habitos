@@ -1,4 +1,5 @@
 import "fake-indexeddb/auto";
+import { openDB } from "idb";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { startOfWeek, todayKey } from "@/lib/domain/dates";
 import { IdbRepository } from "./idb-repository";
@@ -33,6 +34,25 @@ describe("IdbRepository", () => {
     expect(await newRepo(name).listHabits()).toHaveLength(2);
   });
 
+  it("migración v2: quita el campo de recordatorio de los hábitos guardados en v1", async () => {
+    const name = `habitos-test-${n++}`;
+    const v1 = await openDB(name, 1, {
+      upgrade(db) {
+        db.createObjectStore("habits", { keyPath: "id" });
+        const completions = db.createObjectStore("completions", { keyPath: "id" });
+        completions.createIndex("byHabit", "habitId");
+        completions.createIndex("byDate", "date");
+      },
+    });
+    await v1.put("habits", { id: "viejo", name: "Leer", order: 0, reminder: null });
+    v1.close();
+
+    const habits = await newRepo(name).listHabits();
+    expect(habits).toHaveLength(1);
+    expect(habits[0].name).toBe("Leer");
+    expect(habits[0]).not.toHaveProperty("reminder");
+  });
+
   it("crea, edita y ordena hábitos", async () => {
     const repo = newRepo();
     const created = await repo.createHabit({
@@ -41,7 +61,6 @@ describe("IdbRepository", () => {
       frequency: { type: "weekly", times: 3 },
       timeOfDay: "tarde",
       group: "casa",
-      reminder: null,
     });
     expect(created.name).toBe("Fregar");
     expect(created.order).toBe(2);

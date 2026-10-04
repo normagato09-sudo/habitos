@@ -8,7 +8,6 @@ export const SEED_HABITS: HabitInput[] = [
     frequency: { type: "daily" },
     timeOfDay: "manana",
     group: "personal",
-    reminder: null,
   },
   {
     name: "Ducharme",
@@ -16,6 +15,5 @@ export const SEED_HABITS: HabitInput[] = [
     frequency: { type: "weekdays", days: [2, 4, 7] },
     timeOfDay: "noche",
     group: "personal",
-    reminder: null,
   },
 ];

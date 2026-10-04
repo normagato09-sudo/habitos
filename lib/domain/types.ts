@@ -14,12 +14,6 @@ export type TimeOfDay = "manana" | "tarde" | "noche" | "cualquiera";
 /** Texto libre para poder añadir más grupos sin migrar datos. */
 export type GroupId = string;
 
-export type Reminder = {
-  enabled: boolean;
-  /** Hora local "HH:MM". */
-  time: string;
-};
-
 export type Habit = {
   id: string;
   name: string;
@@ -27,7 +21,6 @@ export type Habit = {
   frequency: Frequency;
   timeOfDay: TimeOfDay;
   group: GroupId;
-  reminder: Reminder | null;
   /** Primer día en que el hábito cuenta (para rachas y estadísticas). */
   startDate: DateKey;
   /** Posición en las listas. */
@@ -47,7 +40,7 @@ export type Completion = {
 /** Datos que el usuario rellena al crear o editar un hábito. */
 export type HabitInput = Pick<
   Habit,
-  "name" | "emoji" | "frequency" | "timeOfDay" | "group" | "reminder"
+  "name" | "emoji" | "frequency" | "timeOfDay" | "group"
 > &
   Partial<Pick<Habit, "startDate">>;
 

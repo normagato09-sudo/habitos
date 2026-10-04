@@ -6,7 +6,7 @@ import type { HabitRepository } from "./repository";
 import { SEED_HABITS } from "./seed";
 
 const DB_NAME = "habitos";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const CHANNEL = "habitos-cambios";
 
 interface HabitosDB extends DBSchema {
@@ -45,7 +45,18 @@ export class IdbRepository implements HabitRepository {
             void tx.objectStore("habits").add(buildHabit({ ...input, startDate }, i, now));
           });
         }
-        // Futuras versiones: añadir aquí migraciones con `if (oldVersion < 2) { … }`.
+        if (oldVersion >= 1 && oldVersion < 2) {
+          // v2: se quitan los recordatorios; se borra el campo de los hábitos guardados.
+          void (async () => {
+            const store = tx.objectStore("habits");
+            for (let cursor = await store.openCursor(); cursor; cursor = await cursor.continue()) {
+              const habit: Habit & { reminder?: unknown } = { ...cursor.value };
+              delete habit.reminder;
+              await cursor.update(habit);
+            }
+          })();
+        }
+        // Futuras versiones: añadir aquí migraciones con `if (oldVersion < 3) { … }`.
       },
     });
 

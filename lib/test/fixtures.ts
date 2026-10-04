@@ -8,7 +8,6 @@ export function makeHabit(frequency: Frequency, startDate = "2026-09-01"): Habit
     frequency,
     timeOfDay: "cualquiera",
     group: "personal",
-    reminder: null,
     startDate,
     order: 0,
     createdAt: "2026-09-01T08:00:00.000Z",
