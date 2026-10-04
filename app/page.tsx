@@ -1,8 +1,13 @@
-export default function Home() {
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ScreenHeader } from "@/components/ui/ScreenHeader";
+
+export default function HoyPage() {
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center">
-      <h1 className="text-4xl font-semibold tracking-tight">Hábitos</h1>
-      <p className="text-base opacity-70">En construcción. Muy pronto, tus hábitos aquí.</p>
-    </main>
+    <>
+      <ScreenHeader eyebrow="Tu día" title="Hoy" />
+      <EmptyState emoji="🌱" title="Aquí verás tus hábitos de hoy">
+        Muy pronto podrás marcarlos con un toque.
+      </EmptyState>
+    </>
   );
 }
