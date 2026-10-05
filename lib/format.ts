@@ -64,3 +64,28 @@ export function describeFrequency(frequency: Frequency): string {
     }
   }
 }
+
+const dayMonth = new Intl.DateTimeFormat("es-ES", { day: "numeric", month: "short" });
+const dayMonthYear = new Intl.DateTimeFormat("es-ES", { day: "numeric", month: "short", year: "numeric" });
+const monthName = new Intl.DateTimeFormat("es-ES", { month: "long" });
+
+/** "Septiembre" */
+export function formatMonth(date: DateKey): string {
+  return capitalize(monthName.format(fromDateKey(date)));
+}
+
+/** "21–27 sept", "28 sept – 4 oct" o, entre años, "29 dic 2025 – 4 ene 2026". */
+export function formatShortRange(from: DateKey, to: DateKey): string {
+  if (from.slice(0, 4) !== to.slice(0, 4)) {
+    return `${dayMonthYear.format(fromDateKey(from))} – ${dayMonthYear.format(fromDateKey(to))}`;
+  }
+  if (from.slice(0, 7) === to.slice(0, 7)) {
+    return `${Number(from.slice(8))}–${dayMonth.format(fromDateKey(to))}`;
+  }
+  return `${dayMonth.format(fromDateKey(from))} – ${dayMonth.format(fromDateKey(to))}`;
+}
+
+/** 0.666… → "67%" */
+export function formatPercent(rate: number): string {
+  return `${Math.round(rate * 100)}%`;
+}

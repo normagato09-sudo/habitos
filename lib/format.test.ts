@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { describeFrequency, formatLongDate, listJoin, relativeDayName } from "./format";
+import {
+  describeFrequency,
+  formatLongDate,
+  formatMonth,
+  formatPercent,
+  formatShortRange,
+  listJoin,
+  relativeDayName,
+} from "./format";
 
 describe("describeFrequency", () => {
   it("describe cada tipo de frecuencia", () => {
@@ -33,5 +41,18 @@ describe("textos de fechas", () => {
     expect(relativeDayName("2026-10-05", "2026-10-04")).toBe("Mañana");
     expect(relativeDayName("2026-10-01", "2026-10-04")).toBe("Jueves");
     expect(formatLongDate("2026-10-01")).toBe("jueves, 1 de octubre");
+  });
+});
+
+describe("textos de estadísticas", () => {
+  it("abrevia los rangos de fechas", () => {
+    expect(formatShortRange("2026-09-21", "2026-09-27")).toBe("21–27 sept");
+    expect(formatShortRange("2026-09-28", "2026-10-04")).toBe("28 sept – 4 oct");
+    expect(formatShortRange("2025-12-29", "2026-01-04")).toBe("29 dic 2025 – 4 ene 2026");
+  });
+
+  it("nombra meses y porcentajes", () => {
+    expect(formatMonth("2026-09-01")).toBe("Septiembre");
+    expect(formatPercent(2 / 3)).toBe("67%");
   });
 });
