@@ -40,3 +40,11 @@ npm run build
   Archivos de `/_next/static`: desde la caché.
 - Cada despliegue genera un `/sw.js` distinto; la app avisa con
   «Hay una versión nueva» y se actualiza al pulsar «Actualizar».
+
+## Datos y copias de seguridad
+
+- Todo se guarda solo en el navegador del móvil (IndexedDB); no hay servidor.
+- En Ajustes, «Guardar copia» descarga un archivo `habitos-copia-AAAA-MM-DD.json`
+  con los hábitos y los días marcados. «Restaurar una copia» lo comprueba antes
+  de tocar nada y, tras confirmar, sustituye todos los datos de una sola vez.
+- El tema (automático, claro u oscuro) se guarda en `localStorage`.

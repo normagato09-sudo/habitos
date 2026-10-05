@@ -2,6 +2,7 @@ import { openDB, type DBSchema, type IDBPDatabase } from "idb";
 import { startOfWeek, todayKey } from "@/lib/domain/dates";
 import { applyHabitChanges, buildHabit } from "@/lib/domain/habits";
 import { completionId, type Completion, type Habit } from "@/lib/domain/types";
+import type { AppData } from "./backup";
 import type { HabitRepository } from "./repository";
 import { SEED_HABITS } from "./seed";
 
@@ -130,6 +131,32 @@ export class IdbRepository implements HabitRepository {
     } else {
       await db.delete("completions", id);
     }
+    this.notify();
+  }
+
+  async exportData(): Promise<AppData> {
+    const db = await this.dbPromise;
+    const tx = db.transaction(["habits", "completions"], "readonly");
+    const [habits, completions] = await Promise.all([
+      tx.objectStore("habits").getAll(),
+      tx.objectStore("completions").getAll(),
+    ]);
+    await tx.done;
+    return { habits, completions };
+  }
+
+  async replaceAll(data: AppData): Promise<void> {
+    const db = await this.dbPromise;
+    // Una sola transacción: si algo falla, no se pierde nada.
+    const tx = db.transaction(["habits", "completions"], "readwrite");
+    const habits = tx.objectStore("habits");
+    const completions = tx.objectStore("completions");
+    await Promise.all([habits.clear(), completions.clear()]);
+    await Promise.all([
+      ...data.habits.map((h) => habits.put(h)),
+      ...data.completions.map((c) => completions.put(c)),
+    ]);
+    await tx.done;
     this.notify();
   }
 

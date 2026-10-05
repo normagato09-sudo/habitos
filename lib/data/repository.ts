@@ -1,4 +1,5 @@
 import type { Completion, DateKey, Habit, HabitInput } from "@/lib/domain/types";
+import type { AppData } from "./backup";
 
 /**
  * Contrato de acceso a datos. La interfaz no sabe dónde viven los datos:
@@ -17,6 +18,11 @@ export interface HabitRepository {
   /** Compleciones entre dos fechas (incluidas); sin fechas, todas. */
   listCompletions(range?: { from: DateKey; to: DateKey }): Promise<Completion[]>;
   setCompleted(habitId: string, date: DateKey, done: boolean): Promise<void>;
+
+  /** Todos los hábitos y días marcados (para las copias de seguridad). */
+  exportData(): Promise<AppData>;
+  /** Sustituye todos los datos por los de una copia, de una sola vez. */
+  replaceAll(data: AppData): Promise<void>;
 
   /** Avisa cuando cambian los datos (también desde otra pestaña). */
   subscribe(listener: () => void): () => void;

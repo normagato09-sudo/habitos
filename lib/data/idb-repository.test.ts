@@ -106,3 +106,30 @@ describe("IdbRepository", () => {
     expect(listener).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("copias de seguridad en IndexedDB", () => {
+  it("exporta todo y lo restaura sustituyendo lo que había", async () => {
+    const source = newRepo();
+    const [teeth] = await source.listHabits();
+    await source.setCompleted(teeth.id, "2026-09-30", true);
+    const data = await source.exportData();
+    expect(data.habits).toHaveLength(2);
+    expect(data.completions).toHaveLength(1);
+
+    const target = newRepo();
+    await target.createHabit({
+      name: "Se borrará",
+      emoji: "🗑️",
+      frequency: { type: "daily" },
+      timeOfDay: "tarde",
+      group: "casa",
+    });
+    const listener = vi.fn();
+    target.subscribe(listener);
+    await target.replaceAll(data);
+
+    expect(await target.listHabits()).toEqual(await source.listHabits());
+    expect(await target.listCompletions()).toEqual(data.completions);
+    expect(listener).toHaveBeenCalled();
+  });
+});
