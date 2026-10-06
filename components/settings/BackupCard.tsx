@@ -79,12 +79,16 @@ export function BackupCard() {
   const pick = async (file: File | undefined) => {
     if (!file) return;
     setMessage(null);
-    const result = parseBackup(await file.text());
-    if (!result.ok) {
-      setMessage({ kind: "error", text: result.error });
-      return;
+    try {
+      const result = parseBackup(await file.text());
+      if (!result.ok) {
+        setMessage({ kind: "error", text: result.error });
+        return;
+      }
+      setPending({ incoming: result.data, current: await getRepository().exportData() });
+    } catch {
+      setMessage({ kind: "error", text: "No se ha podido leer el archivo. Prueba otra vez." });
     }
-    setPending({ incoming: result.data, current: await getRepository().exportData() });
   };
 
   const restore = async () => {

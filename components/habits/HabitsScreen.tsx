@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { HabitForm } from "@/components/habits/HabitForm";
 import { IconChevronRight, IconPlus, IconTrash } from "@/components/icons";
 import { Button } from "@/components/ui/Button";
@@ -42,9 +42,13 @@ export function HabitsScreen() {
   // Cambia en cada apertura para que el formulario empiece de cero.
   const [formKey, setFormKey] = useState(0);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  // Evita guardar dos veces si se toca el botón seguido.
+  const busy = useRef(false);
 
   const open = (next: Editing) => {
     setFormKey((k) => k + 1);
+    setSaveError(null);
     setEditing(next);
   };
   const close = () => {
@@ -52,17 +56,38 @@ export function HabitsScreen() {
     setEditing(null);
   };
 
-  const save = async (input: HabitInput) => {
+  const run = async (action: () => Promise<unknown>, error: string) => {
+    if (busy.current) return;
+    busy.current = true;
+    try {
+      await action();
+      close();
+    } catch {
+      setConfirmDelete(false);
+      setSaveError(error);
+    } finally {
+      busy.current = false;
+    }
+  };
+
+  const save = (input: HabitInput) => {
     const repo = getRepository();
-    if (editing?.mode === "edit") await repo.updateHabit(editing.habit.id, input);
-    else await repo.createHabit(input);
-    close();
+    return run(
+      () =>
+        editing?.mode === "edit"
+          ? repo.updateHabit(editing.habit.id, input)
+          : repo.createHabit(input),
+      "No se ha podido guardar el hábito. Prueba otra vez.",
+    );
   };
 
   const remove = async () => {
     if (editing?.mode !== "edit") return;
-    await getRepository().deleteHabit(editing.habit.id);
-    close();
+    const { id } = editing.habit;
+    await run(
+      () => getRepository().deleteHabit(id),
+      "No se ha podido borrar el hábito. Prueba otra vez.",
+    );
   };
 
   const newButton = (
@@ -149,9 +174,16 @@ export function HabitsScreen() {
         onClose={close}
         title={editing?.mode === "edit" ? "Editar hábito" : "Nuevo hábito"}
         footer={
-          <Button type="submit" form={FORM_ID} block size="lg">
-            {editing?.mode === "edit" ? "Guardar cambios" : "Crear hábito"}
-          </Button>
+          <>
+            {saveError && (
+              <p role="alert" className="mb-3 text-sm font-semibold text-danger">
+                {saveError}
+              </p>
+            )}
+            <Button type="submit" form={FORM_ID} block size="lg">
+              {editing?.mode === "edit" ? "Guardar cambios" : "Crear hábito"}
+            </Button>
+          </>
         }
       >
         {editing && (

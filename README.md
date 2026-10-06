@@ -2,6 +2,20 @@
 
 App de hábitos en español, pensada para el móvil e instalable como PWA.
 
+## Qué hace
+
+- **Hoy**: los hábitos que tocan cada día, por momento (mañana, tarde, noche)
+  y grupo. Se marcan con un toque; se puede ir a días pasados para marcarlos
+  y ver los futuros. Muestra la racha de cada hábito.
+- **Hábitos**: crear, editar y borrar. Frecuencia diaria, días concretos o
+  veces por semana.
+- **Estadísticas**: cumplimiento por semana, mes o año, comparado con el
+  periodo anterior; rachas y detalle por hábito.
+- **Ajustes**: tema (automático, claro u oscuro), copias de seguridad e
+  instrucciones para instalar la app.
+- `/diseno` es una página interna para revisar el sistema de diseño; no
+  aparece en la navegación.
+
 ## Tecnología
 
 - Next.js (App Router) + TypeScript + Tailwind CSS
