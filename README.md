@@ -13,8 +13,6 @@ App de hábitos en español, pensada para el móvil e instalable como PWA.
   periodo anterior; rachas y detalle por hábito.
 - **Ajustes**: tema (automático, claro u oscuro), copias de seguridad e
   instrucciones para instalar la app.
-- `/diseno` es una página interna para revisar el sistema de diseño; no
-  aparece en la navegación.
 
 ## Tecnología
 
